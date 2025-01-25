@@ -1,0 +1,39 @@
+services:
+  webtop:
+    build: webtop
+    container_name: webtop
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+
+  torproxy:
+    image: dperson/torproxy
+    container_name: torproxy
+    restart: unless-stopped
+    ports:
+      - 8118:8118 # web proxy
+      - 9050:9050 # socks proxy
+
+  tor:
+    image: goldy/tor-hidden-service:0.3.5.8
+    links:
+      - nginx
+    container_name: tor
+    restart: unless-stopped
+    environment:
+        SERVICE1_TOR_SERVICE_HOSTS: 80:nginx:80
+        SERVICE1_TOR_SERVICE_VERSION: '3'
+
+  nginx:
+    image: nginx
+    container_name: nginx
+    hostname: world
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+    restart: unless-stopped
