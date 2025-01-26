@@ -1,6 +1,6 @@
 services:
   webtop:
-    build: webtop
+    image: lscr.io/linuxserver/webtop:ubuntu-xfce
     container_name: webtop
     security_opt:
       - seccomp:unconfined
@@ -21,19 +21,73 @@ services:
       - 9050:9050 # socks proxy
 
   tor:
-    image: goldy/tor-hidden-service:0.3.5.8
+    image: goldy/tor-hidden-service
     links:
       - nginx
     container_name: tor
     restart: unless-stopped
     environment:
-        SERVICE1_TOR_SERVICE_HOSTS: 80:nginx:80
+        # nginx and whoami will share the same onion v3 address
+        SERVICE1_TOR_SERVICE_HOSTS: 80:nginx:80,88:whoami:80
         SERVICE1_TOR_SERVICE_VERSION: '3'
+        # npm will have its own onion v3 address
+        NPM_TOR_SERVICE_HOSTS: 80:npm:80
+        NPM_TOR_SERVICE_VERSION: '3'
 
   nginx:
     image: nginx
     container_name: nginx
-    hostname: world
-    volumes:
-      - ./html:/usr/share/nginx/html:ro
     restart: unless-stopped
+    configs:
+      - source: nginx
+        target: /usr/share/nginx/html/index.html
+
+  npm:
+    image: jc21/nginx-proxy-manager
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - 81:81
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+
+  nginx2:
+    image: nginx
+    container_name: nginx2
+    restart: unless-stopped
+    configs:
+      - source: nginx2
+        target: /usr/share/nginx/html/index.html
+
+  whoami:
+    image: traefik/whoami
+    container_name: whoami
+    hostname: whoami
+    restart: unless-stopped
+
+volumes:
+  npm_data:
+  npm_letsencrypt:
+
+configs:
+  nginx:
+    content: |
+      <html>
+          <head>
+              <title>nginx</title>
+          </head>
+          <body>
+              <p>nginx</p>
+          </body>
+      </html>
+  nginx2:
+    content: |
+      <html>
+          <head>
+              <title>nginx2</title>
+          </head>
+          <body>
+              <p>nginx2</p>
+          </body>
+      </html>

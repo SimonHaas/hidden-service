@@ -26,6 +26,9 @@ docker compose exec tor ls -la /var/lib/tor/hidden_service
 If you do not want to change settings in your browser, you can use [webtop](https://github.com/SimonHaas/webspace) on port 3000 to open a remote instance of firefox.
 In this case, set the SOCKS proxy to `torproxy:9050`.
 
+Just like on the clear web you can use multiple services via different ports on the same address.
+You can also host multiple hostnames eg. multiple .onion-addresses.
+
 ## vanity addresses
 
 https://community.torproject.org/onion-services/advanced/vanity-addresses/
@@ -82,3 +85,15 @@ services:
         # or if you have created an environment variable, simply omit the value
         SERVICE1_TOR_SERVICE_KEY:
 ```
+
+# nginx-proxy-manager
+
+I have added [nginx-proxy-manager](https://nginxproxymanager.com) just to show and explore a different use case.
+You can access the admin interface on `localhost:81` and login with username `admin@example.com` and password `changeme`.
+It does not make sense to add multiple proxy hosts but you can add one, the onion-domain of your nginx-proxy-manager instance.
+
+![add proxy host](images/edit-proxy-host.png "add proxy host")
+
+Then you can use custom locations to host multiple services under one port.
+
+![add custom location](images/custom-location.png "add custom location")
