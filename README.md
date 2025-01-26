@@ -82,3 +82,18 @@ services:
         # or if you have created an environment variable, simply omit the value
         SERVICE1_TOR_SERVICE_KEY:
 ```
+
+## onionspray
+
+https://onionservices.torproject.org/apps/web/onionspray/
+
+``` shell
+git clone https://gitlab.torproject.org/tpo/onion-services/onionspray.git
+cd onionspray
+./opt/build-ubuntu-focal.sh
+# customize onionspray-config/example.tconf
+./onionspray config ../onionspray-config/example.tconf
+./onionspray script
+./onionspray start myproject
+./onionspray maps myproject
+```

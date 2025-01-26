@@ -21,7 +21,7 @@ services:
       - 9050:9050 # socks proxy
 
   tor:
-    image: goldy/tor-hidden-service:0.3.5.8
+    image: goldy/tor-hidden-service:latest
     links:
       - nginx
     container_name: tor

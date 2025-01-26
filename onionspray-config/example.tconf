@@ -1,0 +1,19 @@
+# boilerplate, adjust if needed
+set nginx_resolver 8.8.8.8 1.1.1.1 ipv6=off
+set nginx_cache_seconds 60
+set nginx_cache_size 64m
+set nginx_tmpfile_size 8m
+set log_separate 1
+
+# make sure to test upstream HTTPS certificates
+#
+# you might need to adjust this setting depending on the Operating System
+# you run; and you may even need to install and maintain this file yourself
+# somewhere
+set nginx_proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt
+
+# preserve this domain name in free text or email addresses
+set preserve_csv save,example\\.com,i,example.com
+
+set project myproject
+hardmap %NEW_V3_ONION% example.com
